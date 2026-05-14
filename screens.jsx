@@ -49,7 +49,7 @@ function Dashboard({ album, coll, activity, onGo, onExport }) {
         <div className="recent-item" onClick={onExport} style={{ cursor: 'pointer', background: 'var(--accent-glow)', borderColor: 'var(--accent)' }}>
           <span className="dot dupe" />
           <div style={{ flex: 1, minWidth: 0 }}>
-            <div className="what" style={{ color: 'var(--accent)', fontWeight: 700 }}>Compartir repetidas</div>
+            <div className="what" style={{ color: 'var(--accent)', fontWeight: 700 }}>Enviar lista de repetidas</div>
             <div style={{ fontSize: 11, color: 'var(--text-dim)', marginTop: 2 }}>Descarga tu lista para intercambiar</div>
           </div>
           <span className="when">{overall.dupes}</span>
