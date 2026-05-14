@@ -20,7 +20,7 @@ function Dashboard({ album, coll, activity, onGo }) {
     <div className="main">
       <div className="hero">
         <div className="hero-meta"><span className="live-dot" /> ÁLBUM OFICIAL · FIFA WORLD CUP 26</div>
-        <h1 className="hero-title">Control <span className="accent">de dani</span></h1>
+        <h1 className="hero-title">Control <span className="accent">de Estampas</span></h1>
         <div className="bignum">
           {overall.got}
           <span className="of">/ {album.total}</span>
