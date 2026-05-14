@@ -20,7 +20,7 @@ function App() {
   const [search, setSearch] = useState('');
   const [toast, setToast] = useState('');
   const [detail, setDetail] = useState(null); // sticker for long-press modal
-  const [importerOpen, setImporterOpen] = useState(false);
+
   const [editTeam, setEditTeam] = useState(null);
   const toastTimer = useRef(null);
   const [t, setTweak] = useTweaks(TWEAK_DEFAULTS);
@@ -106,7 +106,7 @@ function App() {
   let screen;
   if (route.tab === 'home') {
     screen = <Dashboard album={album} coll={coll} activity={activity}
-      onGo={(r) => setRoute(r)} />;
+      onGo={(r) => setRoute(r)} onExport={exportColl} />;
   } else if (route.tab === 'teams') {
     screen = <TeamsList album={album} coll={coll}
       search={search} setSearch={setSearch}
@@ -139,7 +139,7 @@ function App() {
       onGo={(r) => setRoute(r)}
       onReset={resetAll}
       onExport={exportColl}
-      onImport={() => setImporterOpen(true)} />;
+      />;
   }
 
   // Bottom nav tab mapping
@@ -181,11 +181,7 @@ function App() {
           onEdit={() => { setDetail(null); /* future: open edit name */ }}
         />
       )}
-      {importerOpen && (
-        <ImporterModal album={album}
-          onClose={() => setImporterOpen(false)}
-          onImported={() => { setImporterOpen(false); flash('Checklist importado'); }} />
-      )}
+
       {editTeam && (
         <EditTeamModal section={editTeam}
           onClose={() => setEditTeam(null)}
@@ -226,83 +222,6 @@ function App() {
   );
 }
 
-// ============ Importer Modal ============
-function ImporterModal({ album, onClose, onImported }) {
-  const [text, setText] = useState('');
-  const [result, setResult] = useState(null);
-  const fileRef = useRef(null);
-
-  function handleFile(e) {
-    const file = e.target.files && e.target.files[0];
-    if (!file) return;
-    const r = new FileReader();
-    r.onload = () => setText(r.result);
-    r.readAsText(file);
-  }
-
-  function preview() {
-    if (!text.trim()) return setResult({ error: 'Pega o sube un archivo primero.' });
-    try {
-      let rows = [];
-      const trimmed = text.trim();
-      if (trimmed.startsWith('[') || trimmed.startsWith('{')) {
-        const json = JSON.parse(trimmed);
-        rows = Array.isArray(json) ? json : (json.stickers || json.items || []);
-      } else {
-        const lines = trimmed.split(/\r?\n/);
-        const headers = lines[0].split(',').map((s) => s.trim().toLowerCase());
-        rows = lines.slice(1).map((ln) => {
-          const cells = ln.split(',');
-          const obj = {};
-          headers.forEach((h, i) => { obj[h] = (cells[i] || '').trim(); });
-          return obj;
-        });
-      }
-      setResult({ count: rows.length, sample: rows.slice(0, 3) });
-    } catch (e) {
-      setResult({ error: 'No se pudo parsear: ' + e.message });
-    }
-  }
-
-  return (
-    <Modal open={true} onClose={onClose}
-      title="Importar checklist"
-      sub="JSON o CSV con columnas: code, name, team, section, foil, verified">
-      <div className="field">
-        <label>Archivo</label>
-        <input ref={fileRef} type="file" accept=".json,.csv,.txt" onChange={handleFile} />
-      </div>
-      <div className="field">
-        <label>O pega aquí</label>
-        <textarea rows={6} value={text} onChange={(e) => setText(e.target.value)}
-          placeholder='[{"code":"MEX1","name":"Escudo","team":"MEX","foil":true,"verified":true}, ...]' />
-      </div>
-      {result && (
-        <div className="field">
-          <label>Resultado</label>
-          {result.error ? (
-            <div style={{ color: 'var(--missing)', fontSize: 12 }}>{result.error}</div>
-          ) : (
-            <div style={{ fontFamily: 'var(--font-mono)', fontSize: 11, color: 'var(--text-dim)' }}>
-              {result.count} filas detectadas. Muestra:
-              <pre style={{ marginTop: 6, fontSize: 10, color: 'var(--text-faint)' }}>
-{JSON.stringify(result.sample, null, 2)}
-              </pre>
-            </div>
-          )}
-        </div>
-      )}
-      <div style={{ fontSize: 11, color: 'var(--text-faint)', marginBottom: 12 }}>
-        El importador previsualiza los datos antes de sobrescribir el checklist.
-        Mantén tu colección personal intacta — solo se actualiza la estructura del álbum.
-      </div>
-      <div className="actions">
-        <button className="btn" onClick={onClose}>Cancelar</button>
-        <button className="btn full" onClick={preview}>Previsualizar</button>
-      </div>
-    </Modal>
-  );
-}
 
 function EditTeamModal({ section, onClose, onSave }) {
   const [name, setName] = useState(section.name);

@@ -1,6 +1,6 @@
 /* ============ Screens ============ */
 
-function Dashboard({ album, coll, activity, onGo }) {
+function Dashboard({ album, coll, activity, onGo, onExport }) {
   const overall = AlbumData.statsFor(album.allStickers, coll);
   const intro = album.sections.find((s) => s.id === 'intro');
   const museum = album.sections.find((s) => s.id === 'museum');
@@ -44,17 +44,15 @@ function Dashboard({ album, coll, activity, onGo }) {
         </div>
       </div>
 
-      <div className="section-label">Set base <span className="count">{introStats.got + museumStats.got}/{introStats.total + museumStats.total}</span></div>
+      <div className="section-label">Intercambios</div>
       <div className="recent">
-        <div className="recent-item" onClick={() => onGo({ tab: 'sections', sectionId: 'intro' })} style={{ cursor: 'pointer' }}>
-          <span className="code">INTRO</span>
-          <span className="what">Introducción · 9 estampas FOIL</span>
-          <span className="when">{introStats.got}/{introStats.total}</span>
-        </div>
-        <div className="recent-item" onClick={() => onGo({ tab: 'sections', sectionId: 'museum' })} style={{ cursor: 'pointer' }}>
-          <span className="code">FWC9–19</span>
-          <span className="what">FIFA Museum · 11 estampas</span>
-          <span className="when">{museumStats.got}/{museumStats.total}</span>
+        <div className="recent-item" onClick={onExport} style={{ cursor: 'pointer', background: 'var(--accent-glow)', borderColor: 'var(--accent)' }}>
+          <span className="dot dupe" />
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <div className="what" style={{ color: 'var(--accent)', fontWeight: 700 }}>Compartir repetidas</div>
+            <div style={{ fontSize: 11, color: 'var(--text-dim)', marginTop: 2 }}>Descarga tu lista para intercambiar</div>
+          </div>
+          <span className="when">{overall.dupes}</span>
         </div>
       </div>
 
@@ -330,11 +328,11 @@ function FindScreen({ album, coll, onTap, onLongPress }) {
   );
 }
 
-function MoreScreen({ album, coll, onGo, onReset, onExport, onImport }) {
+function MoreScreen({ album, coll, onGo, onReset, onExport }) {
   const overall = AlbumData.statsFor(album.allStickers, coll);
   const missing = album.allStickers.filter((s) => !(coll[s.id] && coll[s.id].have));
   const dupes = album.allStickers.filter((s) => coll[s.id] && coll[s.id].dupes > 0);
-  const sections = album.sections;
+  const sections = album.sections.filter((s) => s.kind === 'team');
 
   return (
     <div className="main">
@@ -396,11 +394,6 @@ function MoreScreen({ album, coll, onGo, onReset, onExport, onImport }) {
 
       <div className="section-label">Datos</div>
       <div className="recent">
-        <div className="recent-item" onClick={onImport} style={{ cursor: 'pointer' }}>
-          <Icon name="upload" size={14} />
-          <span className="what">Importar checklist oficial (JSON / CSV)</span>
-          <Icon name="chevron" size={14} />
-        </div>
         <div className="recent-item" onClick={onExport} style={{ cursor: 'pointer', background: 'var(--accent-glow)', borderColor: 'var(--accent)' }}>
           <Icon name="list" size={14} />
           <span className="what" style={{ color: 'var(--accent)', fontWeight: 700 }}>Descargar lista de repetidas</span>
@@ -416,9 +409,6 @@ function MoreScreen({ album, coll, onGo, onReset, onExport, onImport }) {
       <div style={{ padding: '24px 16px', fontFamily: 'var(--font-mono)', fontSize: 10, color: 'var(--text-faint)', letterSpacing: '0.12em', lineHeight: 1.6 }}>
         <div>FUENTE OFICIAL · CHECKLIST PANINI/FIFA WC26</div>
         <div>980 ESTAMPAS · 112 PÁGINAS · 48 EQUIPOS × 20</div>
-        <div style={{ marginTop: 8, color: 'var(--text-faintest)' }}>
-          Esta app NO inventa numeraciones. Datos no confirmados están marcados con <span className="unv-badge" style={{ marginLeft: 4 }}>?</span>.
-        </div>
       </div>
       <div style={{ height: 40 }} />
     </div>
