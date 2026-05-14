@@ -76,15 +76,19 @@ function App() {
   }
 
   function exportColl() {
-    const payload = {
-      meta: { exportedAt: new Date().toISOString(), app: 'wc26-tracker' },
-      collection: coll,
-      activity,
-    };
-    const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
+    const dupes = album.allStickers
+      .filter((s) => coll[s.id] && coll[s.id].dupes > 0)
+      .sort((a, b) => a.code.localeCompare(b.code));
+    const rows = [
+      ['Repetidas danny'],
+      ['Código', 'Nombre'],
+      ...dupes.map((s) => [s.code, s.name]),
+    ];
+    const csv = rows.map((r) => r.map((v) => `"${String(v).replace(/"/g, '""')}"`).join(',')).join('\n');
+    const blob = new Blob(['﻿' + csv], { type: 'text/csv;charset=utf-8;' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
-    a.href = url; a.download = 'wc26-collection.json'; a.click();
+    a.href = url; a.download = 'repetidas-danny.csv'; a.click();
     URL.revokeObjectURL(url);
     flash('Exportado');
   }

@@ -79,7 +79,8 @@ function StickerRow({ s, userData, onTap, onLongPress }) {
   const have = !!(userData && userData.have);
   const dupes = (userData && userData.dupes) || 0;
 
-  const start = () => {
+  const start = (e) => {
+    e.stopPropagation();
     fired.current = false;
     timer.current = setTimeout(() => {
       fired.current = true;
@@ -88,7 +89,8 @@ function StickerRow({ s, userData, onTap, onLongPress }) {
     }, 450);
   };
   const cancel = () => { if (timer.current) clearTimeout(timer.current); };
-  const release = () => {
+  const release = (e) => {
+    e.stopPropagation();
     if (timer.current) clearTimeout(timer.current);
     if (!fired.current) onTap(s);
   };
@@ -97,10 +99,6 @@ function StickerRow({ s, userData, onTap, onLongPress }) {
     <div ref={ref}
       className="srow"
       data-have={have ? 1 : 0}
-      onPointerDown={start}
-      onPointerUp={release}
-      onPointerLeave={cancel}
-      onPointerCancel={cancel}
       onContextMenu={(e) => { e.preventDefault(); }}>
       <div className="code">{s.code}</div>
       <div className="name">
@@ -111,7 +109,12 @@ function StickerRow({ s, userData, onTap, onLongPress }) {
       <div className="badges">
         {dupes > 0 && <span className="dupe-count">×{dupes}</span>}
       </div>
-      <div className="state" />
+      <div className="state"
+        onPointerDown={start}
+        onPointerUp={release}
+        onPointerLeave={cancel}
+        onPointerCancel={cancel}
+        style={{ touchAction: 'none', cursor: 'pointer' }} />
     </div>
   );
 }
