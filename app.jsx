@@ -87,7 +87,27 @@ function App() {
     }
     if (groups.size === 0) { flash('No tenés repetidas aún'); return; }
     const lines = [...groups.entries()].map(([key, nums]) => `${key}: ${nums.join(', ')}`);
-    const text = 'Repetidas WC26 🌍\n\n' + lines.join('\n');
+    const text = 'Repetidas WC26 \n\n' + lines.join('\n');
+    if (navigator.share) {
+      navigator.share({ text }).catch(() => {});
+    } else {
+      navigator.clipboard.writeText(text).then(() => flash('Copiado')).catch(() => flash('Error'));
+    }
+  }
+
+  function exportMissing() {
+    const groups = new Map();
+    for (const s of album.allStickers) {
+      if (coll[s.id] && coll[s.id].have) continue;
+      const m = s.code.match(/^([A-Za-z]+)(\d+)$/);
+      const key = m ? m[1] : s.code;
+      const num = m ? parseInt(m[2]) : s.code;
+      if (!groups.has(key)) groups.set(key, []);
+      groups.get(key).push(num);
+    }
+    if (groups.size === 0) { flash('¡Colección completa! 🎉'); return; }
+    const lines = [...groups.entries()].map(([key, nums]) => `${key}: ${nums.join(', ')}`);
+    const text = 'Necesito WC26 \n\n' + lines.join('\n');
     if (navigator.share) {
       navigator.share({ text }).catch(() => {});
     } else {
@@ -125,7 +145,7 @@ function App() {
   let screen;
   if (route.tab === 'home') {
     screen = <Dashboard album={album} coll={coll} activity={activity}
-      onGo={(r) => setRoute(r)} onExport={exportColl} />;
+      onGo={(r) => setRoute(r)} onExport={exportColl} onExportMissing={exportMissing} />;
   } else if (route.tab === 'teams') {
     screen = <TeamsList album={album} coll={coll}
       search={search} setSearch={setSearch}

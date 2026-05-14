@@ -1,6 +1,6 @@
 /* ============ Screens ============ */
 
-function Dashboard({ album, coll, activity, onGo, onExport }) {
+function Dashboard({ album, coll, activity, onGo, onExport, onExportMissing }) {
   const overall = AlbumData.statsFor(album.allStickers, coll);
   const intro = album.sections.find((s) => s.id === 'intro');
   const museum = album.sections.find((s) => s.id === 'museum');
@@ -46,13 +46,21 @@ function Dashboard({ album, coll, activity, onGo, onExport }) {
 
       <div className="section-label">Intercambios</div>
       <div className="recent">
-        <div className="recent-item" onClick={onExport} style={{ cursor: 'pointer', background: 'var(--accent-glow)', borderColor: 'var(--accent)' }}>
+        <div className="recent-item" onClick={onExport} style={{ cursor: 'pointer', background: 'rgba(212,255,61,0.07)', borderColor: 'rgba(212,255,61,0.25)' }}>
           <span className="dot dupe" />
           <div style={{ flex: 1, minWidth: 0 }}>
-            <div className="what" style={{ color: 'var(--accent)', fontWeight: 700 }}>Enviar lista de repetidas</div>
-            <div style={{ fontSize: 11, color: 'var(--text-dim)', marginTop: 2 }}>Descarga tu lista para intercambiar</div>
+            <div className="what" style={{ color: 'rgba(212,255,61,0.85)' }}>Enviar lista de repetidas</div>
+            <div style={{ fontSize: 11, color: 'var(--text-dim)', marginTop: 2 }}>Compartí las que te sobran</div>
           </div>
-          <span className="when">{overall.dupes}</span>
+          <span className="when" style={{ color: 'rgba(212,255,61,0.7)' }}>{overall.dupes}</span>
+        </div>
+        <div className="recent-item" onClick={onExportMissing} style={{ cursor: 'pointer', background: 'rgba(96,165,250,0.07)', borderColor: 'rgba(96,165,250,0.25)' }}>
+          <span className="dot" style={{ background: 'rgba(96,165,250,0.8)' }} />
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <div className="what" style={{ color: 'rgba(96,165,250,0.85)' }}>Pedir estampas que me faltan</div>
+            <div style={{ fontSize: 11, color: 'var(--text-dim)', marginTop: 2 }}>Mandásela a quien te pueda completar el álbum</div>
+          </div>
+          <span className="when" style={{ color: 'rgba(96,165,250,0.7)' }}>{overall.missing}</span>
         </div>
       </div>
 
