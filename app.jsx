@@ -76,21 +76,23 @@ function App() {
   }
 
   function exportColl() {
-    const dupes = album.allStickers
-      .filter((s) => coll[s.id] && coll[s.id].dupes > 0)
-      .sort((a, b) => a.code.localeCompare(b.code));
-    const rows = [
-      ['Repetidas WC26'],
-      ['Código', 'Nombre'],
-      ...dupes.map((s) => [s.code, s.name]),
-    ];
-    const csv = rows.map((r) => r.map((v) => `"${String(v).replace(/"/g, '""')}"`).join(',')).join('\n');
-    const blob = new Blob(['﻿' + csv], { type: 'text/csv;charset=utf-8;' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url; a.download = 'repetidas-wc26.csv'; a.click();
-    URL.revokeObjectURL(url);
-    flash('Exportado');
+    const groups = new Map();
+    for (const s of album.allStickers) {
+      if (!(coll[s.id] && coll[s.id].dupes > 0)) continue;
+      const m = s.code.match(/^([A-Za-z]+)(\d+)$/);
+      const key = m ? m[1] : s.code;
+      const num = m ? parseInt(m[2]) : s.code;
+      if (!groups.has(key)) groups.set(key, []);
+      groups.get(key).push(num);
+    }
+    if (groups.size === 0) { flash('No tenés repetidas aún'); return; }
+    const lines = [...groups.entries()].map(([key, nums]) => `${key}: ${nums.join(', ')}`);
+    const text = 'Repetidas WC26 🌍\n\n' + lines.join('\n');
+    if (navigator.share) {
+      navigator.share({ text }).catch(() => {});
+    } else {
+      navigator.clipboard.writeText(text).then(() => flash('Copiado')).catch(() => flash('Error'));
+    }
   }
 
   function exportBackup() {
