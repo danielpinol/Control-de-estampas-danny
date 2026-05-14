@@ -137,4 +137,26 @@ function Toast({ message }) {
   return <div className="toast">{message}</div>;
 }
 
-Object.assign(window, { Icon, Pbar, Header, BottomNav, StickerRow, Modal, Toast });
+function InstallBanner({ onDismiss }) {
+  const ua = navigator.userAgent || '';
+  const isIOS = /iPhone|iPad|iPod/.test(ua);
+  const isAndroid = /Android/.test(ua);
+  if (window.navigator.standalone || window.matchMedia('(display-mode: standalone)').matches) return null;
+  if (!isIOS && !isAndroid) return null;
+  return (
+    <div className="install-banner">
+      <div className="install-banner-inner">
+        <div className="install-banner-text">
+          <div className="install-banner-title">Instala la app en tu celular</div>
+          {isIOS
+            ? <div className="install-banner-desc">Tocá <strong>Compartir</strong> (el ícono de la flecha abajo) → <strong>"Agregar al inicio"</strong></div>
+            : <div className="install-banner-desc">Tocá el menú <strong>⋮</strong> de Chrome → <strong>"Agregar a pantalla de inicio"</strong></div>
+          }
+        </div>
+        <button className="install-banner-close" onClick={onDismiss}>✕</button>
+      </div>
+    </div>
+  );
+}
+
+Object.assign(window, { Icon, Pbar, Header, BottomNav, StickerRow, Modal, Toast, InstallBanner });

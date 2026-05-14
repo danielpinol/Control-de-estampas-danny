@@ -233,6 +233,13 @@ function App() {
             flash('Equipo actualizado');
           }} />
       )}
+      {!prefs.onboardingDismissed && (
+        <InstallBanner onDismiss={() => {
+          const next = { ...prefs, onboardingDismissed: true };
+          setPrefs(next);
+          AlbumData.savePrefs(next);
+        }} />
+      )}
       <TweaksPanel>
         <TweakSection title="Acento">
           <TweakColor
