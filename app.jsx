@@ -80,7 +80,7 @@ function App() {
       .filter((s) => coll[s.id] && coll[s.id].dupes > 0)
       .sort((a, b) => a.code.localeCompare(b.code));
     const rows = [
-      ['Repetidas danny'],
+      ['Repetidas WC26'],
       ['Código', 'Nombre'],
       ...dupes.map((s) => [s.code, s.name]),
     ];
@@ -88,7 +88,7 @@ function App() {
     const blob = new Blob(['﻿' + csv], { type: 'text/csv;charset=utf-8;' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
-    a.href = url; a.download = 'repetidas-danny.csv'; a.click();
+    a.href = url; a.download = 'repetidas-wc26.csv'; a.click();
     URL.revokeObjectURL(url);
     flash('Exportado');
   }

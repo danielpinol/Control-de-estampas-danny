@@ -401,12 +401,12 @@ function MoreScreen({ album, coll, onGo, onReset, onExport, onImport }) {
           <span className="what">Importar checklist oficial (JSON / CSV)</span>
           <Icon name="chevron" size={14} />
         </div>
-        <div className="recent-item" onClick={onExport} style={{ cursor: 'pointer' }}>
+        <div className="recent-item" onClick={onExport} style={{ cursor: 'pointer', background: 'var(--accent-glow)', borderColor: 'var(--accent)' }}>
           <Icon name="list" size={14} />
-          <span className="what">Exportar mi colección (JSON)</span>
+          <span className="what" style={{ color: 'var(--accent)', fontWeight: 700 }}>Descargar lista de repetidas</span>
           <Icon name="chevron" size={14} />
         </div>
-        <div className="recent-item" onClick={onReset} style={{ cursor: 'pointer' }}>
+        <div className="recent-item" onClick={onReset} style={{ cursor: 'pointer', background: 'rgba(239,68,68,0.08)', borderColor: 'rgba(239,68,68,0.4)' }}>
           <Icon name="cross" size={14} />
           <span className="what" style={{ color: 'var(--missing)' }}>Resetear toda la colección</span>
           <Icon name="chevron" size={14} />
