@@ -19,7 +19,7 @@ function Dashboard({ album, coll, activity, onGo }) {
   return (
     <div className="main">
       <div className="hero">
-        <div className="hero-meta"><span className="live-dot" /> ÁLBUM OFICIAL · FIFA WORLD CUP 26</div>
+        <div className="hero-meta"><span className="live-dot" /> HECHO POR · DANIEL PIÑOL PEDROSO</div>
         <h1 className="hero-title">Control <span className="accent">de Estampas</span></h1>
         <div className="bignum">
           {overall.got}
