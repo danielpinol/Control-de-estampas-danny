@@ -215,7 +215,7 @@ function TeamDetail({ album, section, coll, onTap, onLongPress, onBack, onEdit }
         <button className={"chip" + (filter === 'dupes' ? ' active' : '')} onClick={() => setFilter('dupes')}>Repetidas {stats.dupes}</button>
       </div>
       <div className="hint-bar">
-        <span className="accent">Tap</span> obtener · <span className="accent">Tap otra vez</span> +1 repetida · <span className="accent">Long-press</span> editar
+        Toca el <span className="accent">○</span> para obtener · otra vez <span className="accent">+1 repetida</span> · <span className="accent">Long-press</span> editar
       </div>
       <div className="sticker-list">
         {filtered.map((s) => (
@@ -276,7 +276,7 @@ function MarkScreen({ album, coll, onTap, onLongPress }) {
         <button className={"chip" + (filter === 'dupes' ? ' active' : '')} onClick={() => setFilter('dupes')}>Repetidas</button>
       </div>
       <div className="hint-bar">
-        <span className="accent">{list.length}</span> estampas · Tap = obtener / +1 repetida
+        <span className="accent">{list.length}</span> estampas · Toca el ○ para marcar / +1 repetida
       </div>
       <div className="sticker-list">
         {list.slice(0, 400).map((s) => (
