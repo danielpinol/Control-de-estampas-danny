@@ -93,6 +93,23 @@ function App() {
     flash('Exportado');
   }
 
+  function exportBackup() {
+    const date = new Date().toISOString().slice(0, 10);
+    const blob = new Blob([JSON.stringify(coll)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = `backup-wc26-${date}.json`; a.click();
+    URL.revokeObjectURL(url);
+    flash('Backup guardado');
+  }
+
+  function importBackup(data) {
+    if (!confirm('¿Restaurar colección desde backup? Esto reemplazará tu colección actual.')) return;
+    setColl(data);
+    AlbumData.saveCollection(data);
+    flash('Colección restaurada');
+  }
+
   function resetAll() {
     if (!confirm('¿Borrar toda tu colección? Esto no se puede deshacer.')) return;
     setColl({});
@@ -139,6 +156,8 @@ function App() {
       onGo={(r) => setRoute(r)}
       onReset={resetAll}
       onExport={exportColl}
+      onBackup={exportBackup}
+      onRestoreBackup={importBackup}
       />;
   }
 

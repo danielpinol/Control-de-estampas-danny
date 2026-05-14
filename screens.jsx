@@ -328,7 +328,19 @@ function FindScreen({ album, coll, onTap, onLongPress }) {
   );
 }
 
-function MoreScreen({ album, coll, onGo, onReset, onExport }) {
+function MoreScreen({ album, coll, onGo, onReset, onExport, onBackup, onRestoreBackup }) {
+  const fileRef = React.useRef(null);
+  function handleRestore(e) {
+    const file = e.target.files && e.target.files[0];
+    if (!file) return;
+    const r = new FileReader();
+    r.onload = () => {
+      try { onRestoreBackup(JSON.parse(r.result)); }
+      catch { alert('Archivo inválido'); }
+    };
+    r.readAsText(file);
+    e.target.value = '';
+  }
   const overall = AlbumData.statsFor(album.allStickers, coll);
   const missing = album.allStickers.filter((s) => !(coll[s.id] && coll[s.id].have));
   const dupes = album.allStickers.filter((s) => coll[s.id] && coll[s.id].dupes > 0);
@@ -409,6 +421,12 @@ function MoreScreen({ album, coll, onGo, onReset, onExport }) {
       <div style={{ padding: '24px 16px', fontFamily: 'var(--font-mono)', fontSize: 10, color: 'var(--text-faint)', letterSpacing: '0.12em', lineHeight: 1.6 }}>
         <div>FUENTE OFICIAL · CHECKLIST PANINI/FIFA WC26</div>
         <div>980 ESTAMPAS · 112 PÁGINAS · 48 EQUIPOS × 20</div>
+      </div>
+      <div style={{ padding: '4px 16px 8px', fontFamily: 'var(--font-mono)', fontSize: 9, color: 'var(--text-faintest)', letterSpacing: '0.1em', display: 'flex', gap: 10 }}>
+        <input ref={fileRef} type="file" accept=".json" onChange={handleRestore} style={{ display: 'none' }} />
+        <span onClick={onBackup} style={{ cursor: 'pointer' }}>BACKUP</span>
+        <span>·</span>
+        <span onClick={() => fileRef.current && fileRef.current.click()} style={{ cursor: 'pointer' }}>RESTAURAR</span>
       </div>
       <div style={{ height: 40 }} />
     </div>
